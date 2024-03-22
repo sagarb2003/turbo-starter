@@ -9,73 +9,45 @@ Run the following command:
 ```sh
 npx create-turbo@latest
 ```
+<img width="251" alt="turbo-1" src="https://github.com/sagarb2003/turbo-starter/assets/99736036/f43ef4f4-cce0-4d36-bce5-4647177644d2">
+<img width="507" alt="turbo-2" src="https://github.com/sagarb2003/turbo-starter/assets/99736036/3a2ea371-eebf-46bd-b855-5c2c54d29dc2">
 
-## What's inside?
+# Adding a Node.js app(little tricky)
+Everything else remains the same (Create a new project, add typescript, add express…) <br/>
+The only thing that’s different is that tsc doesn’t perform great with turborepo<br/>
+We can use either tsup or esbuild for building our backend application<br/>
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
+We will build using esbuild 
+steps:<br/>
+1) npm install esbuild in the backend folder<br/>
+2) change scripts to this:=>
+```sh
+"scripts": {
+    "build": "esbuild ./src/index.ts --bundle --platform=node --outfile=dist/index.js"
+  },
 ```
-cd my-turborepo
-pnpm build
+3) npm run build<br/>
+4) then backend will run fine node dist/index.js<br/>
+5) Also change the tsconfig.json to this(in backend folder):=>
+```sh
+{
+    "extends": "@repo/typescript-config/base.json",
+    "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+     "lib": ["ES2015"],
+  },
+  "exclude": ["node_modules"],
+  "include": ["."]
+    
+}
 ```
+Refer this for building backend with nodeJs:=> <a href="https://github.com/vercel/turbo/tree/main/examples/kitchen-sink" target="_blank" >Click</a>
 
-### Develop
+# How to make a package in turborepo
+For example (making a common package for zod validations)<br/>
+Refer this:
+<a href="https://projects.100xdevs.com/tracks/monorepo/monorepo-18" target="_blank" >Click</a>
 
-To develop all apps and packages, run the following command:
 
-```
-cd my-turborepo
-pnpm dev
-```
 
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
